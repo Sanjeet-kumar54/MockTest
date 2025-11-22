@@ -1,0 +1,5 @@
+{
+  "name": "MockTest - AI-Powered Test Platform",
+  "description": "An AI-powered platform for students to generate, take, and analyze mock tests for government exams. Features include PDF-to-test conversion, image-to-mock-test generation, and detailed question analysis using Gemini.",
+  "requestFramePermissions": []
+}
