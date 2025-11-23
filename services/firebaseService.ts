@@ -76,8 +76,15 @@ export const loginWithGoogle = async () => {
 
         return user;
     } catch (error: any) {
-        console.error("Google Sign In Error:", error);
-        throw error;
+        console.error("Google Sign In Error Details:", error);
+        
+        // If we see 't is not iterable', it's specifically an SDK mismatch
+        if (error.message && error.message.includes('iterable')) {
+            throw new Error("System Configuration Error: Please refresh the page. If the issue persists, the browser cache may need clearing.");
+        }
+
+        // Propagate message for UI display
+        throw new Error(error.message || "Google Sign-In failed. Please try again.");
     }
 }
 
