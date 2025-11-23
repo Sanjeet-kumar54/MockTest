@@ -3,7 +3,8 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { Question } from "../types";
 
 // Initialize Gemini client safely with the provided API key
-const ai = new GoogleGenAI({ apiKey: "AIzaSyCy7w91zu4bfwJzs9hXmRQdqLU5_FOlH3Y" });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
+const ai = new GoogleGenAI({ apiKey });
 
 // Helper function to convert file to base64
 const fileToGenerativePart = async (file: File) => {
@@ -99,9 +100,9 @@ export const analyzeImageForQuiz = async (imageFile: File, answerSheetFile?: Fil
     const parsedData = JSON.parse(jsonString);
     return parsedData as Question[];
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error analyzing image with Gemini:", error);
-    throw new Error("Failed to generate mock test from image. The image might not contain a clear question format.");
+    throw new Error(`Failed to generate mock test from image: ${error.message || "Unknown error"}`);
   }
 };
 
@@ -184,9 +185,9 @@ export const analyzePdfForQuiz = async (pdfFile: File, answerSheetFile?: File): 
     const parsedData = JSON.parse(jsonString);
     return parsedData as Question[];
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error analyzing PDF with Gemini:", error);
-    throw new Error("Failed to generate mock test from PDF. The document might not be readable or contain questions in a clear format.");
+    throw new Error(`Failed to generate mock test from PDF: ${error.message || "Unknown error"}`);
   }
 };
 
@@ -226,9 +227,9 @@ export const getQuestionAnalysis = async (question: Question, userAnswerIndex: n
 
         return response.text || "No explanation available.";
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error getting question analysis from Gemini:", error);
-        throw new Error("Failed to get analysis. Please check your API key or try again later.");
+        throw new Error(`Failed to get analysis: ${error.message || "Unknown error"}`);
     }
 };
 
@@ -267,9 +268,9 @@ export const getDetailedQuestionAnalysis = async (question: Question, userAnswer
 
         return response.text || "No detailed explanation available.";
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error getting detailed analysis from Gemini:", error);
-        throw new Error("Failed to get detailed analysis.");
+        throw new Error(`Failed to get detailed analysis: ${error.message || "Unknown error"}`);
     }
 };
 
