@@ -2,8 +2,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Question } from "../types";
 
-// Initialize Gemini client safely using process.env.API_KEY directly as per guidelines
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Initialize Gemini client safely with the provided API key
+const ai = new GoogleGenAI({ apiKey: "AIzaSyCy7w91zu4bfwJzs9hXmRQdqLU5_FOlH3Y" });
 
 // Helper function to convert file to base64
 const fileToGenerativePart = async (file: File) => {
@@ -27,19 +27,26 @@ export const analyzeImageForQuiz = async (imageFile: File, answerSheetFile?: Fil
       Identify all questions, their multiple-choice options, and the correct answer.
       
       CRITICAL INSTRUCTION FOR TEXT FLOW:
-      - **Fix Broken Lines**: The text in the image might be broken into multiple lines due to column width. **Join these lines** to form complete, continuous sentences. Do NOT keep hard line breaks in the middle of a sentence.
-      - **Paragraphs**: Only keep line breaks if they clearly separate different paragraphs or list items.
+      - **Verbatim Transcription**: Extract text exactly as it appears. Do NOT rephrase.
+      - **Preserve Lines**: Keep original line breaks and paragraph structure.
+      - **Fix Broken Sentences**: If a sentence is split across two lines due to layout, join them with a space. Do NOT add a newline in the middle of a sentence.
+      - **Comma Handling**: Do NOT break a line immediately after a comma. Keep the text flowing naturally.
       
       CRITICAL INSTRUCTION FOR MATH:
-      - Use **Inline LaTeX** (single $...$) for all math expressions.
-      - **IMPORTANT**: For fractions, integrals, or complex notation, strictly use \\displaystyle inside the dollar signs. Example: $\\displaystyle \\frac{x^2}{y}$.
-      - This ensures fractions are formatted vertically ("uper-niche") but the text continues on the SAME LINE beside it.
-      - Do NOT use double dollar signs ($$...$$) as this creates a new line.
+      - **Always Use LaTeX**: Wrap ALL math expressions in single dollar signs ($...$).
+      - **Fractions**: Use $\\displaystyle \\frac{a}{b}$ for fractions to ensure they stack vertically.
+      - **Display Math**: Use double dollar signs ($$...$$) ONLY for large, complex equations that must be on their own line.
+      - **Consistency**: Do NOT use plain text for math (like x^2), always use LaTeX ($x^2$).
 
+      CRITICAL INSTRUCTION FOR FIGURES & DIAGRAMS:
+      - Do NOT try to generate SVG code or ASCII art for diagrams.
+      - Instead, explicitly mention that there is a diagram and describe it briefly in the 'question' text.
+      - Example: "Question text... [Refer to the diagram in original document showing three intersecting circles A, B, C...]"
+      
       CRITICAL INSTRUCTION FOR LANGUAGES:
-      - If the image contains questions in BOTH English and Hindi (or another language), extract BOTH.
+      - If the image contains questions in BOTH English and Hindi, extract BOTH.
       - Map English text to 'question' and 'options'.
-      - Map Hindi/Second language text to 'questionHindi' and 'optionsHindi'.
+      - Map Hindi text to 'questionHindi' and 'optionsHindi'.
       - If only one language is present, leave the *Hindi fields empty.
 
       The correct answer might be marked. If not, please infer it.
@@ -79,7 +86,7 @@ export const analyzeImageForQuiz = async (imageFile: File, answerSheetFile?: Fil
               correctOption: {
                 type: Type.INTEGER,
                 description: 'The index (0-based) of the correct option in the options array.',
-              },
+              }
             },
             required: ['question', 'options', 'correctOption'],
           },
@@ -108,19 +115,25 @@ export const analyzePdfForQuiz = async (pdfFile: File, answerSheetFile?: File): 
       Identify all multiple-choice questions, their respective options, and determine the correct answer.
       
       CRITICAL INSTRUCTION FOR TEXT FLOW:
-      - **Fix Broken Lines**: The text in the PDF might be broken into multiple lines due to column width. **Join these lines** to form complete, continuous sentences. Do NOT keep hard line breaks in the middle of a sentence.
-      - **Paragraphs**: Only keep line breaks if they clearly separate different paragraphs or list items.
+      - **Verbatim Transcription**: Extract text exactly as it appears.
+      - **Preserve Lines**: Keep original line breaks.
+      - **Fix Broken Sentences**: Join split lines to form complete sentences.
+      - **Comma Handling**: Do NOT break a line immediately after a comma.
       
       CRITICAL INSTRUCTION FOR MATH:
-      - Use **Inline LaTeX** (single $...$) for all math expressions.
-      - **IMPORTANT**: For fractions, integrals, or complex notation, strictly use \\displaystyle inside the dollar signs. Example: $\\displaystyle \\frac{x^2}{y}$.
-      - This ensures fractions are formatted vertically ("uper-niche") but the text continues on the SAME LINE beside it.
-      - Do NOT use double dollar signs ($$...$$) as this creates a new line.
+      - **Always Use LaTeX**: Wrap ALL math expressions in single dollar signs ($...$).
+      - **Fractions**: Use $\\displaystyle \\frac{a}{b}$ for vertical stacking.
+      - **Display Math**: Use double dollar signs ($$...$$) for standalone equations.
+      
+      CRITICAL INSTRUCTION FOR FIGURES & DIAGRAMS:
+      - Do NOT try to generate SVG code or ASCII art for diagrams.
+      - Instead, explicitly mention that there is a diagram and describe it briefly in the 'question' text.
+      - Example: "Question text... [Refer to the diagram in original document showing three intersecting circles A, B, C...]"
       
       CRITICAL INSTRUCTION FOR LANGUAGES:
-      - If the PDF contains questions in BOTH English and Hindi (or another language), extract BOTH.
+      - If the PDF contains questions in BOTH English and Hindi, extract BOTH.
       - Map English text to 'question' and 'options'.
-      - Map Hindi/Second language text to 'questionHindi' and 'optionsHindi'.
+      - Map Hindi text to 'questionHindi' and 'optionsHindi'.
       - If only one language is present, leave the *Hindi fields empty.
     `;
 
@@ -158,7 +171,7 @@ export const analyzePdfForQuiz = async (pdfFile: File, answerSheetFile?: File): 
               correctOption: {
                 type: Type.INTEGER,
                 description: 'The index (0-based) of the correct option in the options array.',
-              },
+              }
             },
             required: ['question', 'options', 'correctOption'],
           },

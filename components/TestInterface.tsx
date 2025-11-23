@@ -283,7 +283,7 @@ const TestInterface: React.FC<TestInterfaceProps> = ({ test, user, onFinish }) =
 
       <div className="flex-grow flex overflow-hidden relative">
         {/* Main Content */}
-        <main className="flex-grow flex flex-col h-full overflow-hidden relative z-0">
+        <main className="flex-grow flex flex-col h-full overflow-hidden relative z-0 min-w-0">
            {/* Sub Header */}
            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-2 flex justify-between items-center flex-shrink-0">
                <div className="flex items-center space-x-4">
@@ -319,7 +319,6 @@ const TestInterface: React.FC<TestInterfaceProps> = ({ test, user, onFinish }) =
                    </div>
 
                    <div className="mb-8">
-                       {/* Changed whitespace-pre-wrap to standard (omitted) to allow normal wrapping */}
                        <p className="text-lg text-gray-800 dark:text-gray-200 leading-relaxed font-medium">{question.question}</p>
                        {/* Dual Language Display: Render Hindi question if available */}
                        {question.questionHindi && (
@@ -388,7 +387,7 @@ const TestInterface: React.FC<TestInterfaceProps> = ({ test, user, onFinish }) =
             fixed inset-y-0 right-0 w-80 bg-blue-50 dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 shadow-2xl z-50
             transform transition-transform duration-300 ease-in-out
             ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
-            md:relative md:translate-x-0 md:flex md:shadow-none md:z-40 flex flex-col
+            md:relative md:translate-x-0 md:flex md:shadow-none md:z-40 flex flex-col flex-shrink-0
         `}>
              
              {/* Mobile Close Button */}
